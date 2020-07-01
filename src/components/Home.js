@@ -48,11 +48,15 @@ export default class Home extends Component {
     axios
       .get(API_URL)
       .then(res => {
-        navigation.navigate('Details', {item: res});
+        if (res.data) {
+          let randomnumber = Math.floor(Math.random() * 10 + 1);
+          let astroidarray = res.data['near_earth_objects'];
+          let length = astroidarray.length;
+          let randomobj = astroidarray[randomnumber % length];
+          if (randomobj) this.searchAstroidDetailsById(randomobj.id);
+        }
       })
-      .catch(err => {
-        navigation.navigate('Details', {item: err});
-      });
+      .catch(err => {});
   };
 
   findAstroidById = () => {
