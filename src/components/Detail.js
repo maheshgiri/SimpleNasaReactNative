@@ -13,11 +13,11 @@ export default class Detail extends Component {
     const {data} = this.state;
     return (
       <View>
-        <Text>name : {route.name}</Text>
-        <Text>nasa_jpl_url : {route.nasa_jpl_url}</Text>
+        <Text>name : {route.params.name}</Text>
+        <Text>nasa_jpl_url : {route.params.nasa_jpl_url}</Text>
         <Text>
-          is_potentially_hazardous_asteroid :{' '}
-          {route.is_potentially_hazardous_asteroid}
+          is_potentially_hazardous_asteroid :
+          {route.params.is_potentially_hazardous_asteroid}
         </Text>
       </View>
     );

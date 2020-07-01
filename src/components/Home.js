@@ -1,14 +1,15 @@
 import React, {Component} from 'react';
-import {View, TextInput, Button, Text} from 'react-native';
+import {View, TextInput, Button, Text, Alert} from 'react-native';
 import {ScrollView} from 'react-native-gesture-handler';
 import axios from 'axios';
 
 const API_URL =
   'https://api.nasa.gov/neo/rest/v1/neo/browse?api_key=S43EtihFsvewDZff4iK3gd7dDU3Rxca7FFsqzdhC';
 export default class Home extends Component {
-  state = {};
+  state = {disabled: true, textvalue: ''};
 
   searchAstroidDetailsById = astroidid => {
+    const {navigation} = this.props;
     let API_DETAILS =
       'https://api.nasa.gov/neo/rest/v1/neo/' +
       astroidid +
@@ -25,7 +26,21 @@ export default class Home extends Component {
           });
         }
       })
-      .catch(err => {});
+      .catch(err => {
+        Alert.alert(
+          'Error',
+          err.message + API_DETAILS,
+          [
+            {
+              text: 'Cancel',
+              onPress: () => console.log('Cancel Pressed'),
+              style: 'cancel',
+            },
+            {text: 'OK', onPress: () => console.log('OK Pressed')},
+          ],
+          {cancelable: false},
+        );
+      });
   };
 
   selectRandomAstroid = () => {
@@ -40,6 +55,14 @@ export default class Home extends Component {
       });
   };
 
+  findAstroidById = () => {
+    this.searchAstroidDetailsById(this.state.textvalue);
+  };
+
+  changeState = text => {
+    if (text) this.setState({disabled: false, textvalue: text});
+  };
+
   render() {
     const {navigation} = this.props;
     return (
@@ -47,12 +70,13 @@ export default class Home extends Component {
         <TextInput
           style={{height: 40}}
           placeholder="Enter Asteroid ID"
-          onChangeText={text => this.setState({inputtext: text})}
+          onChangeText={text => this.changeState(text)}
         />
-        <Text>{this.state.inputtext}</Text>
+        <Text>{this.state.textvalue}</Text>
         <Button
-          onPress={() => navigation.navigate('Details', {item: 'Hi'})}
+          onPress={this.findAstroidById}
           title="Submit"
+          disabled={this.state.disabled}
         />
         <Button onPress={this.selectRandomAstroid} title="Random Astroid" />
       </View>
